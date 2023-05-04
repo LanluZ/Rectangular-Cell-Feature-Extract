@@ -22,22 +22,18 @@
 
 ---
 
-### 注意事项
+**去除蓝底**
 
-1. 对于二值化有内置两种方法，自行选用，此处采用后一种
-   
-   ```python
-   def autoBinaryImgL(img):
-       img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-       img_gray = cv2.blur(img_gray, (3, 3))  # 滤波
-       ret, img_gray_binary = cv2.threshold(img_gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)  # 自适应
-       return img_gray_binary
-   ```
-   
-   ```python
-   def delBlueBackground(img):
-       img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-       img_gray = cv2.blur(img_gray, (3, 3))  # 滤波
-       ret, img_gray_binary = cv2.threshold(img_gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)  # 自适应
-       return img_gray_binary
-   ```
+```python
+def delBlueBackground(img):
+    # 滤波
+    img = cv2.medianBlur(img, 3)
+    # 去除蓝底
+    img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    lower_blue = np.array([100, 60, 46])
+    upper_blue = np.array([124, 255, 255])
+    img_gray_binary = cv2.inRange(img_hsv, lower_blue, upper_blue)
+    img_mask = np.copy(img)
+    img_mask[img_gray_binary != 0] = [0, 0, 0]
+    return img_mask
+```
