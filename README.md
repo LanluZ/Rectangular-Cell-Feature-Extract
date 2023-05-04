@@ -1,4 +1,4 @@
-# Cell-Feature-Extract
+# Rectangular-Cell-Feature-Extract
 
 ### 维管束细胞图像特征提取
 
