@@ -24,7 +24,7 @@ def main():
         # 预处理图片
         img = cv2.imread('./Data/' + filename)
         # 选择其中一种二值化方式
-        img_gray_binary = autoBinaryImgL(img)
+        img_gray_binary = delBlueBackground(img)
 
         # 轮廓拟合
         contours, hierarchy = cv2.findContours(img_gray_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -48,6 +48,14 @@ def main():
 
 # 二值化方式一
 def autoBinaryImgL(img):
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.blur(img_gray, (3, 3))  # 滤波
+    ret, img_gray_binary = cv2.threshold(img_gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)  # 自适应
+    return img_gray_binary
+
+
+# 二值化方式二
+def delBlueBackground(img):
     # 滤波
     img = cv2.medianBlur(img, 3)
     # 去除蓝底
@@ -56,14 +64,6 @@ def autoBinaryImgL(img):
     upper_blue = np.array([124, 255, 255])
     img_gray_binary = cv2.inRange(img_hsv, lower_blue, upper_blue)
     img_gray_binary = cv2.bitwise_not(img_gray_binary)  # 反色
-    return img_gray_binary
-
-
-# 二值化方式二
-def delBlueBackground(img):
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img_gray = cv2.blur(img_gray, (3, 3))  # 滤波
-    ret, img_gray_binary = cv2.threshold(img_gray, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY)  # 自适应
     return img_gray_binary
 
 
