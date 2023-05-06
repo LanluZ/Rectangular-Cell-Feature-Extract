@@ -1,6 +1,8 @@
 import csv
 import os
 
+import cv2
+
 from kit import *
 
 
@@ -31,11 +33,13 @@ def main():
         # 轮廓拟合
         contours, hierarchy = cv2.findContours(img_gray_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         index = getMaxCounterIndex(contours)
-        cv2.drawContours(img, contours, index, (0, 0, 255), 3)
-        cv2.imwrite('./Out/Draw-' + filename, img)
 
         # 写入名字
         data_dic['filename'] = filename
+
+        # 轮廓绘制
+        cv2.drawContours(img, contours, index, (0, 0, 255), 3)
+        cv2.imwrite('./Out/Draw-' + filename, img)
 
         # 最小矩形获取
         rect = cv2.minAreaRect(contours[index])
